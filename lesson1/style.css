@@ -34,4 +34,7 @@ header {
 
 .goods-item:active {
     box-shadow: 1px 1px 1px #cee0e6;
+    position: relative;
+    top: 2px;
+    left: 2px;
 }
