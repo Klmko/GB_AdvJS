@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="burgerstyle.css">
+    <title>Бургер-конструктор</title>
+</head>
+
+<body>
+
+
+    <fieldset class="wrap">
+        <legend>Размер бургера</legend>
+        <div>
+            <input id="big" type="radio" name="size" value="big" data-calories="40" data-price="100">
+            <label for="big">Большой 40ккал 100р</label>
+        </div>
+        <div>
+            <input id="small" type="radio" name="size" value="small" data-calories="20" data-price="50">
+            <label for="small">Маленький 20ккал 50р</label>
+        </div>
+    </fieldset>
+
+    <fieldset class="wrap">
+        <legend>Начинка</legend>
+        <div>
+            <input id="cheese" type="radio" name="stuff" value="cheese" data-calories="20" data-price="10">
+            <label for="cheese">Сыр 20ккал 10р</label>
+        </div>
+
+        <div>
+            <input id="salad" type="radio" name="stuff" value="salad" data-calories="5" data-price="20">
+            <label for="salad">Салат 5ккал 20р</label>
+        </div>
+
+        <div>
+            <input id="potato" type="radio" name="stuff" value="potato" data-calories="10" data-price="15">
+            <label for="potato">Картофель 10ккал 15р</label>
+        </div>
+    </fieldset>
+
+    <fieldset class="wrap">
+        <legend>Топпинг</legend>
+        <div>
+            <input type="checkbox" id="pipe" name="topings" data-calories="0" data-price="15" checked>
+            <label for="pipe">Приправа</label>
+        </div>
+
+        <div>
+            <input type="checkbox" id="mainez" name="topings" data-calories="5" data-price="20">
+            <label for="mainez">Майонез</label>
+        </div>
+    </fieldset>
+
+    <input id="check" class="newBurger" type="button" value="Собрать бургер">
+    <div class="price">Стоимость:<span id="price">0</span></div>
+    <div class="calories"></div>Калорийность:<span id="calories">0</span></div>
+
+    <script src="burger.js"></script>
+
+    <script>
+        window.onload = () => {
+            document.getElementById("check").addEventListener('click', () => {
+                let burger = new Burger('size', 'stuff', 'topings');
+                burger.showSum('#price', '#calories');
+            });
+        }
+    </script>
+</body>
+
+</html>
