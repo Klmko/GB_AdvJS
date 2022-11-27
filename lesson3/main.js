@@ -1,20 +1,27 @@
 const API = 'https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-api/master/responses';
 
-// Показать или скрыть содержимое корзины
+// Показать или скрыть содержимое корзины по клику на кнопке
 
 document.querySelector('.cart__button').addEventListener('click', () => {
     document.querySelector('.cart__box').classList.toggle('invisible')
 })
 
 
-
 document.querySelector('.goods__list').addEventListener('click', event => {
-    if (!event.target.classList.contains('cart_item')) {
+    if (!event.target.classList.contains('goods__item')) {
         return;
     }
-    productsEl.innerHTML = products[event.target.dataset.type]
-        .map(product => product.getProductMarkup()).join('');
+    cartbox.addProduct(event.target.getAttribute('data-id'))
 });
+
+document.querySelector('.cart__box').addEventListener('click', event => {
+    if (!event.target.classList.contains('cart_item_del')) {
+        return;
+    }
+    cartbox.removeProduct(+event.target.closest('.cart_item').getAttribute('data-id'));
+});
+
+
 
 
 // класс Корзина
@@ -24,51 +31,66 @@ class CartBox {
         this.targetElement = el;
     }
     // добавить товар в корзину
-    addProduct(product) {
-        let cartitem = getProduct(product.id);
+    addProduct(id) {
+        let cartitem = this.getProductbyID(id);
         if (!cartitem) {
-            this.goods.push(new CartBoxItem(product))
+            this.goods.push(new CartBoxItem(products.getProductbyID(id)))
         } else {
-            cartitem.quantity++
+            cartitem.quantity++;
+            cartitem.update();
         }
+        this.render();
     }
 
     // удалить товар из корзины
-    removeProduct() {
-        let cartitem = getProduct(product.id);
-        if (!cartitem) {
-            this.goods.pop(new CartBoxItem(product))
+    removeProduct(id) {
+        let cartitem = this.getProductbyID(id);
+        if (cartitem.quantity < 2) {
+            this.goods = this.goods.filter((element) => element.product.id !== id);
         } else {
-            cartitem.quantity--
+            cartitem.quantity--;
+            cartitem.update();
         }
+        this.render();
     }
 
     // получить указанный товар в корзине
-    getProduct(id_product) {
-        return this.goods.find((element) => { element.product.id == id_product });
+    getProductbyID(id_product) {
+        return this.goods.find((element) => element.product.id == id_product);
     }
+
 
     // создать html разметку корзины
     render() {
-        return
-        `   <div class="cart_item">
-            <div class="cart_item_name">${this.name}</div>
-            <div class="cart_item_price">${this.price}</div>
-            <span>x</span>
-            <div class="cart_item_quant">${this.quantity}</div>
-            <div class="cart_item_price_total">${this.total_price}</div>
-            <div class="cart_item_del">x</div>
-        </div>`
+        this.targetElement.innerHTML = this.goods.map(el => el.render()).join('');
     }
+
+
+
 }
+
 
 
 class CartBoxItem {
     constructor(product) {
         this.product = product;
         this.quantity = 1;
-        this.total_price = product.price * this.quantity;
+        this.update();
     }
+    update() {
+        this.total_price = this.product.price * this.quantity;
+    }
+    render() {
+        return `<div class="cart_item" data-id="${this.product.id}">
+            <div class="cart_item_name">${this.product.name}</div>
+            <div class="cart_item_price">${this.product.price}</div>
+            <span>x</span>
+            <div class="cart_item_quant">${this.quantity}</div>
+            <div class="cart_item_price_total">${this.total_price}</div>
+            <div class="cart_item_del">x</div>
+        </div>`
+    }
+
 }
 
 
@@ -118,6 +140,13 @@ class ProductsList {
     render() {
         this.targetElement.innerHTML = this.goods.map(el => el.render()).join('');
     }
+
+    getProductbyID(id_product) {
+        return this.goods.find((element) => element.id == id_product);
+    }
+
+
+
 
 }
 
